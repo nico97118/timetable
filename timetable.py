@@ -17,7 +17,6 @@ Arguments:
 
 Options:
     -h, --help          Print this help and exit
-    -l, --list          Print data as list
     -j, --json          Print data in the JSON format
     -c, --compact       Use a compact output format
     -m, --manual        Do not use automatic login
@@ -61,21 +60,7 @@ DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-<<<<<<< HEAD
-class col:
-    red = "\033[1;31m"
-    yel = "\033[1;33m"
-    enc = "\033[1;m"
-    indic = red + "->" + enc
 
-
-def print_courses(courses, current):
-    for c in courses:
-        print(col.indic if c == current else "", c["title"])
-        print("    ", c["room"])
-        print("    ", period(c["start"], c["end"]))
-        print()
-=======
 def print_courses(courses, *, compact=False, fmt=None):
     if fmt is None:
         if compact:
@@ -87,13 +72,6 @@ def print_courses(courses, *, compact=False, fmt=None):
         print(fmt.format(title=c["title"],
                          room=c["room"],
                          period=period(c["start"], c["end"])))
->>>>>>> c7a3cc1ae9ca569e13044d6acd14ad5eb827911b
-
-def inline_courses(courses, focus):
-    for c in courses:
-        line = col.indic if c == focus else ""
-        line += inline_period(c["start"])+" - "+c["room"]+" - "+c["title"]
-        print(line if len(line) < 80 else line[:75]+"..")
 
 def period(start, end, *, days=DAYS, months=MONTHS):
     return "{wday} {day} {mon}:\033[1;33m{sh}h{sm}-{eh}h{em}\033[1;m".format(
@@ -242,19 +220,7 @@ def main():
     if args["--json"]:
         print(converted_dates(timetable))
     else:
-<<<<<<< HEAD
-        focus = courses_in_range("start", "end", 1, timetable)
-        if not focus:
-            focus = courses_in_range(0, "start", 1, timetable)
-            if focus:
-                focus = focus[0]
-    if args["--list"]:
-        inline_courses(timetable, focus)
-    else:
-        print_courses(timetable, focus)
-=======
         print_courses(timetable, compact=args["--compact"])
->>>>>>> c7a3cc1ae9ca569e13044d6acd14ad5eb827911b
 
 
 if __name__ == "__main__":
