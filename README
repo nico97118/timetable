@@ -13,7 +13,7 @@ not be fully implemented yet.
 Usage
 =====
 
-Usage: timetable [-h] [-j] [-m] [-s] [-u url] [-f FILE] [PERIOD]
+Usage: timetable [-h] [-l] [-j] [-m] [-s] [-u url] [-f FILE] [PERIOD]
 
 Arguments:
     PERIOD     Prints timetable for a given period
@@ -22,6 +22,7 @@ Arguments:
 
 Options:
     -h, --help          Print this help and exit
+    -l, --list          Print data as list
     -j, --json          Print data in the JSON format
     -m, --manual        Do not use automatic login
     -s, --save          Save password to keyring.
@@ -69,7 +70,8 @@ TODO
 [x] Select timetable for a specific date
 [?] Add color
 [x] Select timetable for a specific date
-[ ] A short mode with one course by line
+[x] A short mode with one course by line
+[ ] Improve "first" API
 
 License
 =======
