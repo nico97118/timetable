@@ -13,7 +13,11 @@ not be fully implemented yet.
 Usage
 =====
 
+<<<<<<< HEAD
 Usage: timetable [-h] [-l] [-j] [-m] [-s] [-u url] [-f FILE] [PERIOD]
+=======
+Usage: timetable [-h] [-j] [-c] [-m] [-s] [-u url] [-f FILE] [PERIOD]
+>>>>>>> c7a3cc1ae9ca569e13044d6acd14ad5eb827911b
 
 Arguments:
     PERIOD     Prints timetable for a given period
@@ -24,6 +28,7 @@ Options:
     -h, --help          Print this help and exit
     -l, --list          Print data as list
     -j, --json          Print data in the JSON format
+    -c, --compact       Use a compact output format
     -m, --manual        Do not use automatic login
     -s, --save          Save password to keyring.
                         Needs to be combined with --manual
@@ -41,6 +46,7 @@ Examples:
     timetable  next     : print the next course
     timetable  previous : print the previous course
     timetable  current  : print the current course
+    timetable  dd/mm    : print the courses of given date
 
 Dependencies
 ============
@@ -67,11 +73,16 @@ to be saved and then used automatically.
 
 TODO
 ====
+<<<<<<< HEAD
 [x] Select timetable for a specific date
 [?] Add color
 [x] Select timetable for a specific date
 [x] A short mode with one course by line
 [ ] Improve "first" API
+=======
+
+[ ] Add color
+>>>>>>> c7a3cc1ae9ca569e13044d6acd14ad5eb827911b
 
 License
 =======
