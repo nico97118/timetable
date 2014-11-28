@@ -4,7 +4,7 @@
 """
 Get Unify's extranet timetables
 
-Usage: timetable [-h] [-j] [-m] [-s] [-u url] [-f FILE] [PERIOD]
+Usage: timetable [-h] [-l] [-j] [-m] [-s] [-u url] [-f FILE] [PERIOD]
 
 Arguments:
     PERIOD     Prints timetable for a given period
@@ -13,6 +13,7 @@ Arguments:
 
 Options:
     -h, --help          Print this help and exit
+    -l, --list          Print data as list
     -j, --json          Print data in the JSON format
     -m, --manual        Do not use automatic login
     -s, --save          Save password to keyring.
@@ -69,6 +70,11 @@ def print_courses(courses, current):
         print("    ", period(c["start"], c["end"]))
         print()
 
+def inline_courses(courses, focus):
+    for c in courses:
+        line = col.indic if c == focus else ""
+        line += inline_period(c["start"])+" - "+c["room"]+" - "+c["title"]
+        print(line if len(line) < 80 else line[:75]+"..")
 
 def period(start, end, *, days=DAYS, months=MONTHS):
     return "{wday} {day} {mon}:\033[1;33m{sh}h{sm}-{eh}h{em}\033[1;m".format(
@@ -79,6 +85,13 @@ def period(start, end, *, days=DAYS, months=MONTHS):
         sm=start.minute,
         eh=end.hour,
         em=end.minute)
+
+def inline_period(start):
+    return "{day}/{mon}: {sh}h{sm}".format(
+        day=start.day,
+        mon=start.month,
+        sh=start.hour,
+        sm=start.minute)
 
 
 def now():
@@ -215,6 +228,9 @@ def main():
             focus = courses_in_range(0, "start", 1, timetable)
             if focus:
                 focus = focus[0]
+    if args["--list"]:
+        inline_courses(timetable, focus)
+    else:
         print_courses(timetable, focus)
 
 
