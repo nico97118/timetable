@@ -46,32 +46,38 @@ import keyring
 
 
 # To use french names
-#DAYS   = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
-#MONTHS = ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin",
+# DAYS   = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"]
+# MONTHS = ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin",
 #          "Juil", "Aou", "Sep", "Oct", "Nov", "Dec"]
 
-DAYS   = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
+class col:
+    red = "\033[1;31m"
+    yel = "\033[1;33m"
+    enc = "\033[1;m"
+    indic = red + "->" + enc
 
-def print_courses(courses):
+
+def print_courses(courses, current):
     for c in courses:
-        print(c["title"])
+        print(col.indic if c == current else "", c["title"])
         print("    ", c["room"])
         print("    ", period(c["start"], c["end"]))
         print()
 
 
 def period(start, end, *, days=DAYS, months=MONTHS):
-    return "{wday} {day} {mon}: {sh}h{sm}-{eh}h{em}".format(
-                wday = days[int(start.weekday())],
-                day  = start.day,
-                mon  = months[int(start.month)-1],
-                sh   = start.hour,
-                sm   = start.minute,
-                eh   = end.hour,
-                em   = end.minute)
+    return "{wday} {day} {mon}:\033[1;33m{sh}h{sm}-{eh}h{em}\033[1;m".format(
+        wday=days[int(start.weekday())],
+        day=start.day,
+        mon=months[int(start.month) - 1],
+        sh=start.hour,
+        sm=start.minute,
+        eh=end.hour,
+        em=end.minute)
 
 
 def now():
@@ -87,9 +93,9 @@ def courses_in_range(start, end, num, timetable):
 
     num is the maximum number of results wanted.
     """
-    result    = []
+    result = []
     start_lim = start
-    end_lim   = end
+    end_lim = end
 
     for course in timetable:
         if num == 0:
@@ -123,16 +129,16 @@ def filter_dates(timetable, selection):
         return courses_in_range(0, "start", 1, timetable)
 
     if selection == "today":
-        return [ x for x in timetable
-                if x["start"].day == now().day ]
+        return [x for x in timetable
+                if x["start"].day == now().day]
 
     if selection == "tomorrow":
-        return [ x for x in timetable
-                if x["start"].day == (now().day + 1) ]
+        return [x for x in timetable
+                if x["start"].day == (now().day + 1)]
 
     if selection == "first":
-        return [ x for x in timetable
-                if x["start"].day == (now().day + 1) ][:1]
+        return [x for x in timetable
+                if x["start"].day == (now().day + 1)][:1]
 
     if re.match(r"[0-9]+$", selection):
         n = int(selection)
@@ -145,7 +151,7 @@ def filter_dates(timetable, selection):
 def converted_dates(timetable):
     for course in timetable:
         course["start"] = course["start"].timestamp()
-        course["end"]   = course["end"].timestamp()
+        course["end"] = course["end"].timestamp()
 
     return timetable
 
@@ -159,26 +165,25 @@ def main():
         open(cred_file, 'w').close()
 
     if args["--manual"]:
-        url      = input("Unify's extranet url: ")
+        url = input("Unify's extranet url: ")
         username = input("Username: ")
         password = getpass.getpass("Password: ")
         if args["--save"]:
             with open(cred_file, 'w') as f:
                 f.write(username + "\n" + url + "\n")
-                keyring.set_password("extranet", username+url, password)
+                keyring.set_password("extranet", username + url, password)
 
     else:
         with open(cred_file) as f:
-            username,url = f.read().splitlines()
-            password = keyring.get_password("extranet", username+url)
-
+            username, url = f.read().splitlines()
+            password = keyring.get_password("extranet", username + url)
 
     try:
         timetable = Extranet(url, username, password).get_timetable()
     except LoginError:
         exit("Wrong login\n"
-           + "If no password has been saved yet, please, try:\n"
-           + "    timetable.py -ms")
+             + "If no password has been saved yet, please, try:\n"
+             + "    timetable.py -ms")
 
     except ConnectionError:
         exit("Cannot establish a connection to server")
@@ -188,18 +193,20 @@ def main():
 
     except ValueError as e:
         exit("If no password has been saved yet, please, try:\n"
-           + "    timetable.py -ms")
+             + "    timetable.py -ms")
 
     # Sort timetable chronologically
     timetable.sort(key=lambda x: x["start"].timestamp())
 
     timetable = filter_dates(timetable, args["PERIOD"])
 
-
     if args["--json"]:
         print(converted_dates(timetable))
     else:
-        print_courses(timetable)
+        focus = courses_in_range("start", "end", 1, timetable)
+        if not focus:
+            focus = courses_in_range(0, "start", 1, timetable)[0]
+        print_courses(timetable, focus)
 
 
 if __name__ == "__main__":
