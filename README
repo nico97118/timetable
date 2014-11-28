@@ -66,16 +66,10 @@ to be saved and then used automatically.
 
 TODO
 ====
-
-<<<<<<< HEAD
-[x] Better time range control
 [x] Select timetable for a specific date
 [?] Add color
-=======
-[ ] Select timetable for a specific date
-[ ] Add color
+[x] Select timetable for a specific date
 [ ] A short mode with one course by line
->>>>>>> d99950606fdd00be4d2d6ebcbd4ba3fdde2fa790
 
 License
 =======
