@@ -67,9 +67,9 @@ to be saved and then used automatically.
 TODO
 ====
 
-[ ] Better time range control
-[ ] Select timetable for a specific date
-[ ] Add color
+[x] Better time range control
+[x] Select timetable for a specific date
+[?] Add color
 
 License
 =======

@@ -31,6 +31,7 @@ Examples:
     timetable  next     : print the next course
     timetable  previous : print the previous course
     timetable  current  : print the current course
+    timetable  dd/mm    : print the courses of given date
 """
 
 import os
@@ -144,6 +145,12 @@ def filter_dates(timetable, selection):
         n = int(selection)
         return courses_in_range(0, "start", n, timetable)
 
+    if re.match(r"[0-9]{2}/[0-9]{2}$",selection):
+        selected = selection.split("/")
+        return [x for x in timetable
+                if x["start"].day == int(selected[0])
+                and x["start"].month == int(selected[1])]
+
     else:
         sys.exit("Invalid command: " + selection)
 
@@ -205,7 +212,9 @@ def main():
     else:
         focus = courses_in_range("start", "end", 1, timetable)
         if not focus:
-            focus = courses_in_range(0, "start", 1, timetable)[0]
+            focus = courses_in_range(0, "start", 1, timetable)
+            if focus:
+                focus = focus[0]
         print_courses(timetable, focus)
 
 
